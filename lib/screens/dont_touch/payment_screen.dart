@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mek_stripe_terminal/mek_stripe_terminal.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
-import 'package:rive/rive.dart';
+// import 'package:rive/rive.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Terminal terminal;
@@ -192,8 +192,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: AppColors
-                              .primaryColor, // Set color when focused
+                          color:
+                              AppColors.primaryColor, // Set color when focused
                           width: 2.0,
                         ),
                       ),
@@ -206,7 +206,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                       errorBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: AppColors.accentColor, // Set color for error state
+                          color: AppColors
+                              .accentColor, // Set color for error state
                           width: 2.0,
                         ),
                       ),
@@ -247,10 +248,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
             ),
           ),
-          if (_isPaymentSuccessful)
-            RiveAnimation.asset(
-              'assets/animations/success.riv',
-            ),
+          // if (_isPaymentSuccessful)
+          //   RiveAnimation.asset(
+          //     'assets/animations/success.riv',
+          //   ),
         ],
       ),
     );

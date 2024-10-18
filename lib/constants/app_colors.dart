@@ -13,9 +13,10 @@ class AppColors {
   static const Color textLink = accentColor; // Link Text Color
   static const Color textInverse =
       Colors.white; // Inverse Text Color for dark backgrounds
+  static const Color subText = Color(0xFFA9A9A9);
 
   // Shadow Colors
-  static const Color shadowLight = Color(0x1F000000); // Light Shadow
+  static const Color shadowLight = Color(0xFFEDEDED); // Light Shadow
   static const Color shadowDark = Color(0x4D000000); // Darker Shadow
 
   // Border Colors

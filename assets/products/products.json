@@ -1,11 +1,23 @@
 {
   "products": [
     {
+      "name": "Chewing Gum",
+      "description": "A banana flavored chewing gum.",
+      "price": {
+        "amount": 0.99,
+        "currency": "gbp"
+      },
+      "category": "Sweets",
+      "sku": "CHW-GM-001",
+      "stock": 50,
+      "tags": ["eco-friendly", "eco", "friendly", "reusable", "sustainable", "water", "bottle", "hydration"]
+    },
+    {
       "name": "Eco-Friendly Water Bottle",
       "description": "A reusable water bottle made from stainless steel, designed to keep beverages cold for 24 hours and hot for 12 hours. It features a leak-proof lid and a sleek design, making it perfect for on-the-go hydration.",
       "price": {
         "amount": 19.99,
-        "currency": "USD"
+        "currency": "gbp"
       },
       "category": "Beverages",
       "sku": "ECO-WB-001",
@@ -17,12 +29,168 @@
       "description": "Over-ear wireless headphones with noise cancellation technology, offering high-fidelity sound and a comfortable fit for all-day wear. They come with a built-in microphone for hands-free calling and a battery life of up to 30 hours.",
       "price": {
         "amount": 79.99,
-        "currency": "USD"
+        "currency": "gbp"
       },
       "category": "Electronics",
       "sku": "WBT-HDP-002",
       "stock": 75,
-      "tags": ["wireless", "bluetooth" ,"headphones", "electronics", "noise-cancellation"]
+      "tags": ["wireless", "bluetooth", "headphones", "electronics", "noise-cancellation"]
+    },
+    {
+      "name": "Organic Cotton Tote Bag",
+      "description": "A stylish and durable tote bag made from 100% organic cotton. Perfect for shopping, beach trips, or everyday use, it features reinforced handles and a spacious interior.",
+      "price": {
+        "amount": 12.99,
+        "currency": "gbp"
+      },
+      "category": "Accessories",
+      "sku": "OCTB-003",
+      "stock": 200,
+      "tags": ["organic", "cotton", "tote", "bag", "sustainable", "shopping"]
+    },
+    {
+      "name": "Smart Fitness Tracker",
+      "description": "A sleek fitness tracker that monitors heart rate, sleep patterns, and daily activity. It syncs with your smartphone for detailed stats and comes with a built-in GPS.",
+      "price": {
+        "amount": 49.99,
+        "currency": "gbp"
+      },
+      "category": "Wearables",
+      "sku": "SFT-004",
+      "stock": 50,
+      "tags": ["fitness", "tracker", "wearable", "health", "smartwatch", "activity"]
+    },
+    {
+      "name": "Portable Solar Charger",
+      "description": "A compact solar charger for mobile devices, perfect for outdoor activities and travel. It features multiple USB ports and a high-efficiency solar panel.",
+      "price": {
+        "amount": 29.99,
+        "currency": "gbp"
+      },
+      "category": "Electronics",
+      "sku": "PSC-005",
+      "stock": 80,
+      "tags": ["solar", "charger", "portable", "electronics", "outdoor"]
+    },
+    {
+      "name": "Bamboo Toothbrush Set",
+      "description": "A set of eco-friendly bamboo toothbrushes with soft bristles. The biodegradable handles are designed for comfort and sustainability.",
+      "price": {
+        "amount": 9.99,
+        "currency": "gbp"
+      },
+      "category": "Personal Care",
+      "sku": "BTS-006",
+      "stock": 300,
+      "tags": ["bamboo", "toothbrush", "eco-friendly", "sustainable", "personal care"]
+    },
+    {
+      "name": "Travel Neck Pillow",
+      "description": "A memory foam neck pillow designed for comfort during travel. It provides ergonomic support and features a washable cover.",
+      "price": {
+        "amount": 14.99,
+        "currency": "gbp"
+      },
+      "category": "Travel",
+      "sku": "TNP-007",
+      "stock": 120,
+      "tags": ["travel", "neck pillow", "comfort", "memory foam"]
+    },
+    {
+      "name": "Organic Herbal Tea Set",
+      "description": "A selection of organic herbal teas, including chamomile, peppermint, and green tea. Each blend is carefully crafted for relaxation and wellness.",
+      "price": {
+        "amount": 24.99,
+        "currency": "gbp"
+      },
+      "category": "Beverages",
+      "sku": "OHT-008",
+      "stock": 180,
+      "tags": ["organic", "herbal tea", "wellness", "beverages", "relaxation"]
+    },
+    {
+      "name": "Stainless Steel Lunch Box",
+      "description": "A durable, eco-friendly lunch box made from stainless steel. It is leak-proof, easy to clean, and ideal for carrying meals on the go.",
+      "price": {
+        "amount": 17.99,
+        "currency": "gbp"
+      },
+      "category": "Kitchen",
+      "sku": "SSL-009",
+      "stock": 140,
+      "tags": ["lunch box", "stainless steel", "eco-friendly", "kitchen", "sustainable"]
+    },
+    {
+      "name": "Adjustable Yoga Mat Strap",
+      "description": "An adjustable strap for carrying yoga mats, made from durable cotton. It doubles as a stretching strap for added utility.",
+      "price": {
+        "amount": 7.99,
+        "currency": "gbp"
+      },
+      "category": "Fitness",
+      "sku": "AYMS-010",
+      "stock": 250,
+      "tags": ["yoga", "mat strap", "fitness", "stretching", "cotton"]
+    },
+    {
+      "name": "Ceramic Essential Oil Diffuser",
+      "description": "A stylish ceramic diffuser for essential oils, designed to humidify and purify the air. It features a calming LED light and automatic shut-off.",
+      "price": {
+        "amount": 34.99,
+        "currency": "gbp"
+      },
+      "category": "Home",
+      "sku": "CEOD-011",
+      "stock": 90,
+      "tags": ["essential oil", "diffuser", "home", "ceramic", "aromatherapy"]
+    },
+    {
+      "name": "Leather Journal Notebook",
+      "description": "A handcrafted leather-bound journal with 200 pages of high-quality paper. It features a vintage design, making it ideal for writing, sketching, or note-taking.",
+      "price": {
+        "amount": 22.99,
+        "currency": "gbp"
+      },
+      "category": "Stationery",
+      "sku": "LJN-012",
+      "stock": 110,
+      "tags": ["leather", "journal", "notebook", "stationery", "writing"]
+    },
+    {
+      "name": "Eco-Friendly Phone Case",
+      "description": "A biodegradable phone case made from plant-based materials. It provides durable protection for your device and helps reduce plastic waste.",
+      "price": {
+        "amount": 12.99,
+        "currency": "gbp"
+      },
+      "category": "Accessories",
+      "sku": "EFPC-013",
+      "stock": 230,
+      "tags": ["eco-friendly", "phone case", "biodegradable", "accessories", "sustainable"]
+    },
+    {
+      "name": "Rechargeable LED Flashlight",
+      "description": "A high-power rechargeable flashlight with adjustable brightness settings. It includes a USB charging cable and a durable aluminum body.",
+      "price": {
+        "amount": 19.99,
+        "currency": "gbp"
+      },
+      "category": "Outdoors",
+      "sku": "RLF-014",
+      "stock": 95,
+      "tags": ["flashlight", "LED", "rechargeable", "outdoors", "aluminum"]
+    },
+    {
+      "name": "Collapsible Travel Cup",
+      "description": "A foldable silicone travel cup with a leak-proof lid. It is lightweight and compact, making it ideal for hiking, camping, and everyday use.",
+      "price": {
+        "amount": 8.99,
+        "currency": "gbp"
+      },
+      "category": "Travel",
+      "sku": "CTC-015",
+      "stock": 210,
+      "tags": ["collapsible", "travel", "cup", "silicone", "hiking", "camping"]
     }
   ]
 }

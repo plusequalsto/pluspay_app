@@ -31,12 +31,23 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               SvgPicture.asset(
                 'assets/svgs/PlusPay.svg',
-                width: screenRatio * 100,
+                width: screenRatio * 128,
               ),
-              const CircularProgressIndicator(
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(AppColors.accentColor),
-                strokeCap: StrokeCap.round,
+              Container(
+                width: screenSize.width * 0.4, // Set the desired width of the progress bar
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                      20), // Adjust the radius for rounded ends
+                  color: AppColors.backgroundColor, // Background color to match
+                ),
+                child: const LinearProgressIndicator(
+                  value: null, // Use null for indeterminate
+                  backgroundColor:
+                      Colors.transparent, // Make background color transparent
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.accentColor),
+                  minHeight: 4, // Adjust the height of the progress bar
+                ),
               ),
             ],
           ),
