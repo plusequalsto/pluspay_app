@@ -384,7 +384,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    final double screenRatio = screenSize.height / screenSize.width;
+    // final double screenRatio = screenSize.height / screenSize.width;
 
     // Calculate VAT and total
     double vat = subtotal * vatRate;

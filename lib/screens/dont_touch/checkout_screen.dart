@@ -11,18 +11,18 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 
-class ReaderScreen extends StatefulWidget {
+class CheckoutScreen extends StatefulWidget {
   final String deviceType;
-  const ReaderScreen({
+  const CheckoutScreen({
     super.key,
     required this.deviceType,
   });
 
   @override
-  State<ReaderScreen> createState() => _ReaderScreenState();
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _ReaderScreenState extends State<ReaderScreen> {
+class _CheckoutScreenState extends State<CheckoutScreen> {
   bool isScanning = false;
   String scanStatus = "Scan readers";
   Terminal? _terminal;
@@ -261,6 +261,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    // final double screenRatio = screenSize.height / screenSize.width;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Center(

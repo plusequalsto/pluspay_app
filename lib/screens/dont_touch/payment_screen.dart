@@ -248,10 +248,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
             ),
           ),
-          // if (_isPaymentSuccessful)
-          //   RiveAnimation.asset(
-          //     'assets/animations/success.riv',
-          //   ),
+          _isPaymentSuccessful
+              // ? RiveAnimation.asset(
+              //     'assets/animations/success.riv',
+              //   )
+              ? SizedBox.shrink()
+              : SizedBox.shrink(),
         ],
       ),
     );
