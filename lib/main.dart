@@ -62,7 +62,7 @@ class _MainState extends State<Main> {
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: CustomSnackBarUtil.rootScaffoldMessengerKey,
       navigatorKey: navigatorKey,
-      title: '+Pay',
+      title: widget.title,
       onGenerateRoute: widget.router.generator,
       home: initialNavigation(),
     );
