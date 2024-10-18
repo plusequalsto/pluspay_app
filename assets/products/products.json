@@ -1,0 +1,28 @@
+{
+  "products": [
+    {
+      "name": "Eco-Friendly Water Bottle",
+      "description": "A reusable water bottle made from stainless steel, designed to keep beverages cold for 24 hours and hot for 12 hours. It features a leak-proof lid and a sleek design, making it perfect for on-the-go hydration.",
+      "price": {
+        "amount": 19.99,
+        "currency": "USD"
+      },
+      "category": "Beverages",
+      "sku": "ECO-WB-001",
+      "stock": 150,
+      "tags": ["eco-friendly", "eco", "friendly", "reusable", "sustainable", "water", "bottle", "hydration"]
+    },
+    {
+      "name": "Wireless Bluetooth Headphones",
+      "description": "Over-ear wireless headphones with noise cancellation technology, offering high-fidelity sound and a comfortable fit for all-day wear. They come with a built-in microphone for hands-free calling and a battery life of up to 30 hours.",
+      "price": {
+        "amount": 79.99,
+        "currency": "USD"
+      },
+      "category": "Electronics",
+      "sku": "WBT-HDP-002",
+      "stock": 75,
+      "tags": ["wireless", "bluetooth" ,"headphones", "electronics", "noise-cancellation"]
+    }
+  ]
+}

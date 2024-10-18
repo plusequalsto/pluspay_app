@@ -8,11 +8,13 @@ import 'package:pluspay/routes/routes.dart';
 import 'package:pluspay/screens/home_screen/home_screen.dart';
 import 'package:pluspay/screens/splash_screen/splash_screen.dart';
 import 'package:pluspay/utils/custom_snackbar_util.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final Logger logger = Logger();
-void main() {
+void main() async {
   final router = FluroRouter();
+  await dotenv.load(fileName: ".env");
   defineRoutes(router);
   runApp(
     RouterProvider(
@@ -44,7 +46,7 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 8)).then((value) async {
+    Future.delayed(const Duration(seconds: 4)).then((value) async {
       setState(() {
         _loading = false;
       });
