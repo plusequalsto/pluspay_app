@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 import 'package:pluspay/models/products.dart';
-import 'package:pluspay/widgets/custom_card.dart';
-import 'package:badges/badges.dart' as badges;
+import 'package:pluspay/widgets/custom_drawer.dart';
+import 'package:realm/realm.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String deviceType;
+  final Realm realm;
+  final String? deviceToken, deviceType;
   const HomeScreen({
     super.key,
+    required this.realm,
+    required this.deviceToken,
     required this.deviceType,
   });
 
@@ -20,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Products> products = [];
   List<Products> filteredProducts = [];
   TextEditingController searchController = TextEditingController();
@@ -77,127 +82,115 @@ class _HomeScreenState extends State<HomeScreen> {
     logger.d(cart);
   }
 
+  Future<void> _handleRefresh() async {}
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     double screenRatio = screenSize.height / screenSize.width;
     return Scaffold(
+      key: _scaffoldKey, // Ensure the key is set here
       backgroundColor: AppColors.backgroundColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: AppColors.textPrimary,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: SvgPicture.asset(
+                'assets/svgs/drawer_icon.svg', // Replace with your custom icon asset path
+                width: screenRatio * 10,
+              ),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            );
+          },
+        ),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Home',
+            style: TextStyle(
+              fontSize: screenRatio * 9,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+      drawer: CustomDrawer(
+        realm: widget.realm,
+        deviceToken: widget.deviceToken,
+        deviceType: widget.deviceType,
+        onClose: () {
+          Navigator.of(context).pop();
         },
-        child: Center(
-          child: Container(
-            width: screenSize.width,
-            height: screenSize.height,
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: Padding(
+        itemName: (String name) {
+          logger.d(name);
+        },
+      ),
+      body: RefreshIndicator(
+        color: AppColors.primaryColor,
+        backgroundColor: AppColors.backgroundColor,
+        onRefresh: _handleRefresh,
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Container(
+              width: screenSize.width,
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: screenSize.width,
-                    height: screenSize.height * 0.08,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16.0),
-                          child: Icon(
-                            Icons.menu_rounded,
-                            color: AppColors.primaryColor,
-                          ),
+                    height: screenSize.height * 0.24,
+                    child: Container(
+                      margin: EdgeInsets.all(screenRatio * 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.shadowLight,
+                        border: Border.all(
+                          color: AppColors.shadowDark,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                '/checkout', // Named route
-                                (Route<dynamic> route) =>
-                                    true, // false removes all previous routes
-                                arguments: {
-                                  'cart': cart,
-                                  'products': products,
-                                  'deviceType': widget.deviceType,
-                                },
-                              );
-                            },
-                            child: badges.Badge(
-                              badgeContent: Text(
-                                '${cart.values.fold(0, (prev, element) => prev + element)}', // Total items in cart
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  color: AppColors.textPrimary,
-                                  fontFamily: GoogleFonts.poppins().fontFamily,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              badgeAnimation: badges.BadgeAnimation.fade(),
-                              child: const Icon(
-                                Icons.shopping_basket_rounded,
-                                color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(screenRatio * 4),
+                        ),
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          logger.d('No Shops pressed');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'No Shops',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: screenRatio * 8,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.normal,
                               ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: filterProducts,
-                      decoration: InputDecoration(
-                        hintText: 'Search products...',
-                        hintStyle: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.subText,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: AppColors.primaryColor,
+                            Icon(
+                              Icons.add,
+                              size: screenRatio * 16,
+                              color: AppColors.primaryColor,
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  // Use Scrollbar with ListView
-                  Expanded(
-                    child: products.isEmpty
-                        ? const Center(child: CircularProgressIndicator())
-                        : Scrollbar(
-                            child: ListView.builder(
-                              itemCount: filteredProducts.length,
-                              itemBuilder: (context, index) {
-                                final product = filteredProducts[index];
-                                final quantity = cart[product.sku] ??
-                                    0; // Get quantity from cart
-
-                                return CustomCard(
-                                  screenRatio: screenRatio,
-                                  product: product,
-                                  onIncrease: () => addToCart(product),
-                                  onDecrease: () => removeFromCart(product),
-                                  quantity:
-                                      quantity, // Pass the quantity to the card
-                                );
-                              },
-                            ),
-                          ),
                   ),
                 ],
               ),

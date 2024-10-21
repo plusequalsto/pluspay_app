@@ -55,10 +55,12 @@ class CustomCard extends StatelessWidget {
               ),
             ),
             Text(
-              "${product.stock}", // Displaying stock is optional, you can remove this line if not needed
+              product.stock > 0 ? "${product.stock} in stock" : "Out of stock",
               style: TextStyle(
                 fontSize: 10,
-                color: AppColors.subText,
+                color: product.stock > 0
+                    ? AppColors.subText
+                    : AppColors.errorColor,
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.bold,
               ),
@@ -89,11 +91,15 @@ class CustomCard extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.add,
-                color: AppColors.primaryColor,
+                color: product.stock > 0
+                    ? AppColors.primaryColor
+                    : AppColors.subText,
               ),
-              onPressed: onIncrease,
+              onPressed: product.stock > 0
+                  ? onIncrease
+                  : null, // Disable if out of stock
             ),
           ],
         ),

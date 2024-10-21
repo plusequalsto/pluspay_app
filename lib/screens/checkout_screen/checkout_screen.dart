@@ -13,17 +13,21 @@ import 'package:pluspay/main.dart';
 import 'package:pluspay/models/products.dart'; // Make sure to import your Products model
 import 'package:http/http.dart' as http;
 import 'package:pluspay/utils/calculate_total.dart';
+import 'package:realm/realm.dart';
 // import 'package:rive/rive.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  final Realm realm;
   final Map<String, int> cart;
   final List<Products> products;
-  final String deviceType;
+  final String? deviceToken, deviceType;
 
   const CheckoutScreen({
     super.key,
+    required this.realm,
     required this.cart,
     required this.products,
+    required this.deviceToken,
     required this.deviceType,
   });
 

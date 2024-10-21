@@ -17,7 +17,7 @@ class AppColors {
 
   // Shadow Colors
   static const Color shadowLight = Color(0xFFEDEDED); // Light Shadow
-  static const Color shadowDark = Color(0x4D000000); // Darker Shadow
+  static const Color shadowDark = Color(0xFFA9A9A9); // Darker Shadow
 
   // Border Colors
   static const Color borderColor = Color(0xFFE0E0E0); // Light Gray for Borders
@@ -32,7 +32,7 @@ class AppColors {
 
   // Optional: Define your shades if needed
   static const Color primaryColorLight =
-      Color(0xFF4F4F4F); // Light shade of primary color
+      Color(0xFFA9A9A9); // Light shade of primary color
   static const Color primaryColorDark =
       Color(0xFF1F1F1F); // Dark shade of primary color
 }

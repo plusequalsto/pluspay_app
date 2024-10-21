@@ -21,7 +21,7 @@
       },
       "category": "Beverages",
       "sku": "ECO-WB-001",
-      "stock": 150,
+      "stock": 0,
       "tags": ["eco-friendly", "eco", "friendly", "reusable", "sustainable", "water", "bottle", "hydration"]
     },
     {
@@ -107,90 +107,6 @@
       "sku": "OHT-008",
       "stock": 180,
       "tags": ["organic", "herbal tea", "wellness", "beverages", "relaxation"]
-    },
-    {
-      "name": "Stainless Steel Lunch Box",
-      "description": "A durable, eco-friendly lunch box made from stainless steel. It is leak-proof, easy to clean, and ideal for carrying meals on the go.",
-      "price": {
-        "amount": 17.99,
-        "currency": "gbp"
-      },
-      "category": "Kitchen",
-      "sku": "SSL-009",
-      "stock": 140,
-      "tags": ["lunch box", "stainless steel", "eco-friendly", "kitchen", "sustainable"]
-    },
-    {
-      "name": "Adjustable Yoga Mat Strap",
-      "description": "An adjustable strap for carrying yoga mats, made from durable cotton. It doubles as a stretching strap for added utility.",
-      "price": {
-        "amount": 7.99,
-        "currency": "gbp"
-      },
-      "category": "Fitness",
-      "sku": "AYMS-010",
-      "stock": 250,
-      "tags": ["yoga", "mat strap", "fitness", "stretching", "cotton"]
-    },
-    {
-      "name": "Ceramic Essential Oil Diffuser",
-      "description": "A stylish ceramic diffuser for essential oils, designed to humidify and purify the air. It features a calming LED light and automatic shut-off.",
-      "price": {
-        "amount": 34.99,
-        "currency": "gbp"
-      },
-      "category": "Home",
-      "sku": "CEOD-011",
-      "stock": 90,
-      "tags": ["essential oil", "diffuser", "home", "ceramic", "aromatherapy"]
-    },
-    {
-      "name": "Leather Journal Notebook",
-      "description": "A handcrafted leather-bound journal with 200 pages of high-quality paper. It features a vintage design, making it ideal for writing, sketching, or note-taking.",
-      "price": {
-        "amount": 22.99,
-        "currency": "gbp"
-      },
-      "category": "Stationery",
-      "sku": "LJN-012",
-      "stock": 110,
-      "tags": ["leather", "journal", "notebook", "stationery", "writing"]
-    },
-    {
-      "name": "Eco-Friendly Phone Case",
-      "description": "A biodegradable phone case made from plant-based materials. It provides durable protection for your device and helps reduce plastic waste.",
-      "price": {
-        "amount": 12.99,
-        "currency": "gbp"
-      },
-      "category": "Accessories",
-      "sku": "EFPC-013",
-      "stock": 230,
-      "tags": ["eco-friendly", "phone case", "biodegradable", "accessories", "sustainable"]
-    },
-    {
-      "name": "Rechargeable LED Flashlight",
-      "description": "A high-power rechargeable flashlight with adjustable brightness settings. It includes a USB charging cable and a durable aluminum body.",
-      "price": {
-        "amount": 19.99,
-        "currency": "gbp"
-      },
-      "category": "Outdoors",
-      "sku": "RLF-014",
-      "stock": 95,
-      "tags": ["flashlight", "LED", "rechargeable", "outdoors", "aluminum"]
-    },
-    {
-      "name": "Collapsible Travel Cup",
-      "description": "A foldable silicone travel cup with a leak-proof lid. It is lightweight and compact, making it ideal for hiking, camping, and everyday use.",
-      "price": {
-        "amount": 8.99,
-        "currency": "gbp"
-      },
-      "category": "Travel",
-      "sku": "CTC-015",
-      "stock": 210,
-      "tags": ["collapsible", "travel", "cup", "silicone", "hiking", "camping"]
     }
   ]
 }

@@ -4,26 +4,40 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
+import 'package:pluspay/models/user_model.dart';
 import 'package:pluspay/routes/router_provider.dart';
 import 'package:pluspay/routes/routes.dart';
+import 'package:pluspay/screens/authentication_screen/signin_screen.dart';
 import 'package:pluspay/screens/home_screen/home_screen.dart';
 import 'package:pluspay/screens/splash_screen/splash_screen.dart';
 import 'package:pluspay/services/permission_service.dart';
 import 'package:pluspay/utils/custom_snackbar_util.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:realm/realm.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final Logger logger = Logger();
-bool _hasLocationPermission = false; // Track permission status
 void main() async {
   final router = FluroRouter();
   await dotenv.load(fileName: ".env");
+  // Initialize Realm configuration
+  final config = Configuration.local([
+    UserModel.schema,
+  ]);
+  final realm = Realm(config);
+  UserModel? userModel;
+  final results = realm.all<UserModel>();
+  if (results.isNotEmpty) {
+    userModel = results[0];
+  }
   defineRoutes(router);
   runApp(
     RouterProvider(
       router: router,
       child: Main(
         title: '+Pay',
+        realm: realm,
+        userModel: userModel,
         router: router,
       ),
     ),
@@ -32,10 +46,14 @@ void main() async {
 
 class Main extends StatefulWidget {
   final String title;
+  final Realm realm;
+  final UserModel? userModel;
   final FluroRouter router;
   const Main({
     super.key,
     required this.title,
+    required this.realm,
+    required this.userModel,
     required this.router,
   });
 
@@ -46,7 +64,18 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   final PermissionService _permissionService = PermissionService();
   bool _loading = true;
+  bool _hasLocationPermission = false;
   final String _deviceType = Platform.isAndroid ? 'android' : 'ios';
+  String? _deviceToken = '';
+
+  UserModel? getUserData(Realm realm) {
+    final results = realm.all<UserModel>();
+    if (results.isNotEmpty) {
+      return results[0];
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,26 +152,36 @@ class _MainState extends State<Main> {
       navigatorKey: navigatorKey,
       title: widget.title,
       onGenerateRoute: widget.router.generator,
-      home: initialNavigation(),
+      home: (_loading == true && _hasLocationPermission == false)
+          ? RouterProvider(
+              router: widget.router,
+              child: SplashScreen(
+                deviceType: _deviceType,
+              ),
+            )
+          : initialNavigation(),
     );
   }
 
   // Initial navigation logic based on user login and token status
   Widget initialNavigation() {
-    if (_loading) {
-      return RouterProvider(
-        router: widget.router,
-        child: SplashScreen(
-          deviceType: _deviceType,
-        ),
-      );
-    } else {
-      return RouterProvider(
-        router: widget.router,
-        child: HomeScreen(
-          deviceType: _deviceType,
-        ),
-      );
-    }
+    UserModel? userModel = getUserData(widget.realm);
+    return userModel?.id != null
+        ? RouterProvider(
+            router: widget.router,
+            child: HomeScreen(
+              realm: widget.realm,
+              deviceToken: _deviceToken,
+              deviceType: _deviceType,
+            ),
+          )
+        : RouterProvider(
+            router: widget.router,
+            child: SigninScreen(
+              realm: widget.realm,
+              deviceToken: _deviceToken,
+              deviceType: _deviceType,
+            ),
+          );
   }
 }
