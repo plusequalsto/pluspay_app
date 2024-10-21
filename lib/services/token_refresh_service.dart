@@ -20,13 +20,15 @@ class TokenRefreshService {
   TokenRefreshService._internal();
 
   // Initialize method with boolean return
-  void initialize(
-      Realm realm, UserModel userModel, String deviceToken, String deviceType) {
-    if (realm == null ||
-        userModel == null ||
-        deviceToken.isEmpty ||
-        deviceType.isEmpty) {
+  void initialize({
+    required Realm realm,
+    required UserModel userModel,
+    required String deviceToken,
+    required String deviceType,
+  }) {
+    if (deviceToken.isEmpty || deviceType.isEmpty) {
       logger.d('Initialization failed: Insufficient data');
+      return; // Exit the method early
     }
     this.realm = realm;
     this.userModel = userModel;
@@ -36,39 +38,44 @@ class TokenRefreshService {
   }
 
   void _startTokenRefreshTimer() {
-    timer?.cancel();
+    if (timer != null) {
+      logger.d('Existing token refresh timer is canceled');
+      timer?.cancel();
+    }
     timer = Timer.periodic(const Duration(minutes: 10), (timer) async {
       logger.d('Token refresh timer triggered at ${DateTime.now()}');
       await refreshToken();
     });
   }
 
-  Future<bool> refreshToken() async {
+  Future<bool> refreshToken({int retries = 3}) async {
     if (userModel == null || deviceToken == null || deviceType == null) {
       logger.d('Token refresh skipped: insufficient data.');
       return false;
     }
-    try {
-      final response = await AuthApi().refreshToken(userModel!.accessToken,
-          userModel!.refreshToken, deviceToken, deviceType);
-      final jsonResponse = response;
-      final status = jsonResponse['status'];
-      if (status == 200) {
-        final newAccessToken = jsonResponse['accessToken'];
-        final newRefreshToken = jsonResponse['refreshToken'];
-        _updateTokens(newAccessToken, newRefreshToken);
-        return true; // Return true if token refresh is successful
-      } else {
-        logger.d('Token refresh failed: ${jsonResponse['message']}');
+    for (int attempt = 0; attempt < retries; attempt++) {
+      try {
+        final response = await AuthApi().refreshToken(userModel!.accessToken,
+            userModel!.refreshToken, deviceToken, deviceType);
+        final status = response['status'];
+        if (status == 200) {
+          _updateTokens(response['accessToken'], response['refreshToken']);
+          return true;
+        } else {
+          logger.d(
+              'Token refresh attempt $attempt failed: ${response['message']}');
+        }
+      } on SocketException catch (e) {
+        logger.d('NetworkException on attempt $attempt: $e');
+        if (attempt == retries - 1) {
+          return false;
+        }
+      } catch (e) {
+        logger.d('Exception on attempt $attempt: $e');
         return false;
       }
-    } on SocketException catch (e) {
-      logger.d('NetworkException: $e');
-      return false;
-    } on Exception catch (e) {
-      logger.d('Failed to fetch data: $e');
-      return false;
     }
+    return false;
   }
 
   void _updateTokens(String newAccessToken, String newRefreshToken) {
@@ -76,17 +83,26 @@ class TokenRefreshService {
       userModel!.accessToken = newAccessToken;
       userModel!.refreshToken = newRefreshToken;
     });
+    // Optionally validate if tokens have been updated correctly
+    if (userModel!.accessToken == newAccessToken &&
+        userModel!.refreshToken == newRefreshToken) {
+      logger.d('Tokens updated successfully');
+    } else {
+      logger.d('Token update failed');
+    }
   }
 
   // Dispose method with boolean return
   bool dispose() {
     if (timer == null) {
       logger.d('Dispose failed: Timer is not active.');
-      return false; // Return false if there's no active timer to cancel
+      return false;
     }
     timer?.cancel();
     timer = null;
-    logger.d('Timer disposed successfully.');
-    return true; // Return true if the timer is successfully disposed
+    realm = null;
+    userModel = null;
+    logger.d('Timer and resources disposed successfully.');
+    return true;
   }
 }

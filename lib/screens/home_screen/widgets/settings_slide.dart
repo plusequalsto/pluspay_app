@@ -57,7 +57,7 @@ class SettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -83,7 +83,7 @@ class SettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -109,7 +109,7 @@ class SettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -135,7 +135,7 @@ class SettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.number,
           ),
         ],
       ),

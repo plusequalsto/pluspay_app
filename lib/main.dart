@@ -13,6 +13,7 @@ import 'package:pluspay/screens/authentication_screen/signin_screen.dart';
 import 'package:pluspay/screens/home_screen/home_screen.dart';
 import 'package:pluspay/screens/splash_screen/splash_screen.dart';
 import 'package:pluspay/services/analytics_service.dart';
+import 'package:pluspay/services/devide_identifier.dart';
 import 'package:pluspay/services/permission_service.dart';
 import 'package:pluspay/services/push_notification_service.dart';
 import 'package:pluspay/services/token_refresh_service.dart';
@@ -58,8 +59,12 @@ void main() async {
     String deviceType = Platform.isAndroid ? 'android' : 'ios';
 
     if (deviceToken != null) {
-      TokenRefreshService()
-          .initialize(realm, userModel, deviceToken, deviceType);
+      TokenRefreshService().initialize(
+        realm: realm,
+        userModel: userModel,
+        deviceToken: deviceToken,
+        deviceType: deviceType,
+      );
       await TokenRefreshService().refreshToken();
     }
   }
@@ -98,6 +103,7 @@ class _MainState extends State<Main> {
   final PermissionService _permissionService = PermissionService();
   String _deviceToken = '';
   String _deviceType = '';
+  Map<String, dynamic> _newDeviceData = {};
   bool _hasLocationPermission = false;
   bool _isDeviceTokenInitialized = false;
   bool _isRefreshTokenRefreshed = false;
@@ -114,7 +120,12 @@ class _MainState extends State<Main> {
     Future.delayed(const Duration(seconds: 2)).then((value) {
       _getDeviceToken();
     });
+    getDeviceInfo();
     checkLocationPermission();
+  }
+
+  Future<void> getDeviceInfo() async {
+    _newDeviceData = await getDeviceIdentifier();
   }
 
   Future<void> checkLocationPermission() async {
@@ -192,8 +203,12 @@ class _MainState extends State<Main> {
 
   Future<void> _startTokenRefreshService() async {
     // Initialize TokenRefreshService
-    TokenRefreshService()
-        .initialize(widget.realm, widget.userModel!, _deviceToken, _deviceType);
+    TokenRefreshService().initialize(
+      realm: widget.realm,
+      userModel: widget.userModel!,
+      deviceToken: _deviceToken,
+      deviceType: _deviceType,
+    );
 
     // Refresh the token and update the state
     bool isRefreshed = await TokenRefreshService().refreshToken();
@@ -210,7 +225,8 @@ class _MainState extends State<Main> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d('Device Token: $_deviceToken, \nDevice Type: $_deviceType');
+    logger.d(
+        'Device Token: $_deviceToken, \nDevice Type: $_deviceType, \nDeviceInfo: $_newDeviceData');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: CustomSnackBarUtil.rootScaffoldMessengerKey,

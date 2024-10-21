@@ -11,6 +11,8 @@ class ApiService {
 
   Future<Map<String, dynamic>> get(String endpoint, String? accessToken) async {
     final url = Uri.parse('$baseUrl$endpoint');
+    logger.d(
+        'This is get info: \nendpoint: $endpoint, \nurl: $url, \naccessToken: $accessToken');
     final headers = ApiHelper.buildHeaders(accessToken);
     final response = await http.get(url, headers: headers);
     ApiHelper.handleError(response);
@@ -22,11 +24,12 @@ class ApiService {
       {File? file}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     logger.d(
-        'endpoint: $endpoint, \nurl: $url, \naccessToken: $accessToken, \ndata: $data');
+        'This is post info: \nendpoint: $endpoint, \nurl: $url, \naccessToken: $accessToken, \ndata: $data');
     if (accessToken == null) {
       final headers = ApiHelper.buildHeaders();
       final response =
           await http.post(url, headers: headers, body: json.encode(data));
+      logger.d('Reaponse In Post: $response');
       ApiHelper.handleError(response);
       return ApiHelper.parseResponse(response);
     } else {

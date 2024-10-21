@@ -56,7 +56,7 @@ class BrandSettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -82,7 +82,7 @@ class BrandSettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -108,7 +108,7 @@ class BrandSettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -134,7 +134,7 @@ class BrandSettingsSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
         ],
       ),

@@ -55,7 +55,7 @@ class BusinessInfoSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
           SizedBox(height: screenRatio * 8),
           TextField(
@@ -81,7 +81,7 @@ class BusinessInfoSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            keyboardType: TextInputType.name,
+            keyboardType: TextInputType.text,
           ),
         ],
       ),

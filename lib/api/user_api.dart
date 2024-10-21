@@ -4,32 +4,27 @@ import 'package:pluspay/services/api_service.dart';
 class UserApi {
   final ApiService _apiService = ApiService(baseUrl: ApiConstants.baseURL);
 
-  Future<Map<String, dynamic>> addBusiness(
-    String userId,
-    String businessName,
-    String tradingName,
-    Map<String, dynamic> contactInfo, // Pass contactInfo as a Map
-    Map<String, dynamic> brandSettings, // Pass brandSettings as a Map
-    String stripeAccountId,
-    Map<String, dynamic> settings, // Pass settings as a Map
-    String? accessToken,
-    String? deviceToken,
-    String? deviceType,
-  ) async {
+  Future<Map<String, dynamic>> addShopDetails(String userId,
+      Map<String, dynamic> data, String? deviceToken, String? deviceType,
+      [String? accessToken]) async {
     // Construct the request body
     final Map<String, dynamic> requestBody = {
-      'businessName': businessName,
-      'tradingName': tradingName,
-      'contactInfo': contactInfo, // Use the contactInfo Map directly
-      'brandSettings': brandSettings, // Use the brandSettings Map directly
-      'stripeAccountId': stripeAccountId,
-      'settings': settings, // Use the settings Map directly
-      'deleted': false,
-      'deletedAt': null,
+      'businessName': data['businessName'],
+      'tradingName': data['tradingName'],
+      'contactInfo': data['contactInfo'], // Use the contactInfo Map directly
+      'brandSettings':
+          data['brandSettings'], // Use the brandSettings Map directly
+      'settings': data['settings'], // Use the settings Map directly
     };
 
     // Make the API call
     return _apiService.post(
-        ApiConstants.addbusinessUrl(userId), accessToken, requestBody);
+        ApiConstants.addshopdetailsUrl(userId), accessToken, requestBody);
+  }
+
+  Future<Map<String, dynamic>> getShopDetails(String userId,
+      [String? accessToken]) async {
+    // Make the API call
+    return _apiService.get(ApiConstants.getshopdetailsUrl(userId), accessToken);
   }
 }
