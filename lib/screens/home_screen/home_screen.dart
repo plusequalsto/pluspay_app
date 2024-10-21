@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 import 'package:pluspay/models/products.dart';
+import 'package:pluspay/screens/home_screen/widgets/addshop_dialog.dart';
 import 'package:pluspay/widgets/custom_drawer.dart';
 import 'package:realm/realm.dart';
 
@@ -33,53 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    loadProducts(); // Load products when the screen initializes
-  }
-
-  // Load products from the JSON asset file
-  Future<void> loadProducts() async {
-    final String response =
-        await rootBundle.loadString('assets/products/products.json');
-    final Map<String, dynamic> data = jsonDecode(response);
-    final List<dynamic> productList = data['products'];
-    setState(() {
-      products = productList.map((json) => Products.fromJson(json)).toList();
-      filteredProducts =
-          products; // Initialize filteredProducts with all products
-    });
-  }
-
-  void filterProducts(String query) {
-    final filtered = products.where((product) {
-      final nameLower = product.name.toLowerCase();
-      final queryLower = query.toLowerCase();
-      return nameLower.contains(queryLower);
-    }).toList();
-    setState(() {
-      filteredProducts = filtered;
-    });
-  }
-
-  void addToCart(Products product) {
-    setState(() {
-      cart[product.sku] =
-          (cart[product.sku] ?? 0) + 1; // Increment the quantity
-      product.stock--; // Decrease stock (if applicable)
-    });
-    logger.d(cart);
-  }
-
-  void removeFromCart(Products product) {
-    setState(() {
-      if (cart[product.sku] != null && cart[product.sku]! > 0) {
-        cart[product.sku] = cart[product.sku]! - 1; // Decrement the quantity
-        if (cart[product.sku] == 0) {
-          cart.remove(product.sku); // Remove from cart if quantity is 0
-        }
-        product.stock++; // Increase stock (if applicable)
-      }
-    });
-    logger.d(cart);
   }
 
   Future<void> _handleRefresh() async {}
@@ -88,6 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     double screenRatio = screenSize.height / screenSize.width;
+    double appBarHeight = AppBar().preferredSize.height;
+    double availableHeight =
+        screenSize.height - appBarHeight - MediaQuery.of(context).padding.top;
     return Scaffold(
       key: _scaffoldKey, // Ensure the key is set here
       backgroundColor: AppColors.backgroundColor,
@@ -145,35 +100,44 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             child: Container(
               width: screenSize.width,
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(screenRatio),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: screenSize.width,
-                    height: screenSize.height * 0.24,
-                    child: Container(
-                      margin: EdgeInsets.all(screenRatio * 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.shadowLight,
-                        border: Border.all(
-                          color: AppColors.shadowDark,
+                    height: availableHeight * 0.24,
+                    child: GestureDetector(
+                      onTap: () {
+                        logger.d('No Shops pressed');
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AddShopDialog(
+                              screenSize: screenSize,
+                              screenRatio: screenRatio,
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(screenRatio * 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.shadowLight,
+                          border: Border.all(
+                            color: AppColors.shadowDark,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(screenRatio * 4),
+                          ),
                         ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(screenRatio * 4),
-                        ),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          logger.d('No Shops pressed');
-                        },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'No Shops',
+                              'Add Shops',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: AppColors.textSecondary,
@@ -190,6 +154,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: screenSize.width,
+                    height: (availableHeight * 0.76) - (screenRatio * 2),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'No shops added',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: screenRatio * 8,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

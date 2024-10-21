@@ -1,8 +1,31 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pluspay/main.dart';
 
 class PermissionService {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  Future<void> notificationPermission() async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      logger.d('User granted provisional permission');
+    } else {
+      logger.d('User declined or has not accepted permission');
+    }
+  }
+
   Future<LocationPermission> requestLocationPermission() async {
     // Request location permission using Geolocator
     LocationPermission permission = await Geolocator.requestPermission();

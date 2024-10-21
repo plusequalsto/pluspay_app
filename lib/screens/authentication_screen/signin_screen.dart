@@ -79,9 +79,20 @@ class _SigninScreenState extends State<SigninScreen> {
           logger.d('Signin userData: $userData');
           final userModel =
               UserModel(userData['id'], accessToken, refreshToken);
+
           // Save to Realm
           widget.realm.write(() {
-            widget.realm.add(userModel);
+            // Check if user already exists
+            final existingUser = widget.realm.find<UserModel>(userData['id']);
+            if (existingUser != null) {
+              // Update existing user
+              existingUser.accessToken = accessToken;
+              existingUser.refreshToken = refreshToken;
+              // Add any additional updates you need
+            } else {
+              // Add new user
+              widget.realm.add(userModel);
+            }
           });
           if (mounted) {
             CustomSnackBarUtil.showCustomSnackBar("Sign in successful",

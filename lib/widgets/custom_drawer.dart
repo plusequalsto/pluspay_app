@@ -4,9 +4,11 @@ import 'package:pluspay/main.dart';
 import 'package:pluspay/models/user_model.dart';
 import 'package:pluspay/screens/authentication_screen/signin_screen.dart';
 import 'package:pluspay/screens/home_screen/home_screen.dart';
+import 'package:pluspay/utils/custom_snackbar_util.dart';
 import 'package:pluspay/widgets/custom_drawer_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pluspay/widgets/custom_dialog.dart';
 import 'package:realm/realm.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -31,10 +33,7 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer> {
   UserModel? getUserData(Realm realm) {
     final results = realm.all<UserModel>();
-    if (results.isNotEmpty) {
-      return results[0];
-    }
-    return null;
+    return results.isNotEmpty ? results[0] : null;
   }
 
   @override
@@ -116,33 +115,55 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     assetPath: "assets/svgs/logout.svg",
                     name: "Logout",
                     onTap: () async {
-                      UserModel? userModel = getUserData(widget.realm);
+                      // Show the confirmation dialog
+                      bool? confirmLogout = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialog(
+                            screenSize: screenSize,
+                            screenRatio: screenRatio,
+                            title: 'Confirm Logout',
+                            content: 'Are you sure you want to log out?',
+                            action1: 'Cancel',
+                            action2: 'Logout',
+                          ); // Use the separate dialog widget
+                        },
+                      );
 
-                      widget.itemName('Logout');
-                      final response = await AuthApi()
-                          .signout(userModel!.id, userModel.accessToken);
-                      final jsonResponse = response;
-                      logger.i(jsonResponse);
-                      final status = jsonResponse['status'];
+                      // If the user confirmed the logout, proceed with the logout action
+                      if (confirmLogout == true) {
+                        UserModel? userModel = getUserData(widget.realm);
+                        if (userModel != null) {
+                          widget.itemName('Logout');
+                          final response = await AuthApi()
+                              .signout(userModel.id, userModel.accessToken);
+                          final jsonResponse = response;
+                          logger.i(jsonResponse);
+                          final status = jsonResponse['status'];
 
-                      widget.realm.write(() {
-                        widget.realm.delete(userModel);
-                      });
+                          widget.realm.write(() {
+                            widget.realm.delete(userModel);
+                          });
 
-                      if (status == 200) {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SigninScreen(
-                              realm: widget.realm,
-                              deviceToken: widget.deviceToken,
-                              deviceType: widget.deviceType,
-                            ),
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
-                      } else {
-                        // Handle sign-in failure
+                          if (status == 200) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SigninScreen(
+                                  realm: widget.realm,
+                                  deviceToken: widget.deviceToken,
+                                  deviceType: widget.deviceType,
+                                ),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
+                          } else {
+                            CustomSnackBarUtil.showCustomSnackBar(
+                              "Logout failed. Please try again.",
+                              success: false,
+                            );
+                          }
+                        }
                       }
                     },
                   ),

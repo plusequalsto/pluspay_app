@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "576216251359",
+    "project_id": "pluspay-dfee1",
+    "storage_bucket": "pluspay-dfee1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576216251359:android:05abec4e2082741a4a226a",
+        "android_client_info": {
+          "package_name": "com.plusequalsto.pluspay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIbemOY-vwUYwdQHNUKcddWA-T2TeZpNY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
