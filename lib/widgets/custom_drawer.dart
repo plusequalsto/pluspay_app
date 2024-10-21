@@ -2,8 +2,6 @@ import 'package:pluspay/api/auth_api.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 import 'package:pluspay/models/user_model.dart';
-import 'package:pluspay/screens/authentication_screen/signin_screen.dart';
-import 'package:pluspay/screens/home_screen/home_screen.dart';
 import 'package:pluspay/utils/custom_snackbar_util.dart';
 import 'package:pluspay/widgets/custom_drawer_list_item.dart';
 import 'package:flutter/material.dart';
@@ -93,16 +91,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     name: "Home",
                     onTap: () {
                       widget.itemName('Home');
-                      Navigator.pushAndRemoveUntil(
+                      Navigator.pushNamedAndRemoveUntil(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(
-                            realm: widget.realm,
-                            deviceToken: widget.deviceToken,
-                            deviceType: widget.deviceType,
-                          ),
-                        ),
-                        (Route<dynamic> route) => false,
+                        '/home', // Named route
+                        (Route<dynamic> route) =>
+                            false, // This removes all previous routes
+                        arguments: {
+                          'realm': widget.realm,
+                          'deviceToken': widget.deviceToken,
+                          'deviceType': widget.deviceType,
+                        },
                       );
                     },
                   ),
@@ -146,16 +144,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           });
 
                           if (status == 200) {
-                            Navigator.pushAndRemoveUntil(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => SigninScreen(
-                                  realm: widget.realm,
-                                  deviceToken: widget.deviceToken,
-                                  deviceType: widget.deviceType,
-                                ),
-                              ),
-                              (Route<dynamic> route) => false,
+                              '/hosigninme', // Named route
+                              (Route<dynamic> route) =>
+                                  false, // This removes all previous routes
+                              arguments: {
+                                'realm': widget.realm,
+                                'deviceToken': widget.deviceToken,
+                                'deviceType': widget.deviceType,
+                              },
                             );
                           } else {
                             CustomSnackBarUtil.showCustomSnackBar(

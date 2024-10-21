@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pluspay/api/user_api.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
-import 'package:pluspay/models/products.dart';
 import 'package:pluspay/models/user_model.dart';
 import 'package:pluspay/screens/home_screen/widgets/addshop_dialog.dart';
 import 'package:pluspay/screens/home_screen/widgets/no_shops_widget.dart';
@@ -106,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Text(
             'Home',
             style: TextStyle(
+              color: AppColors.textPrimary,
               fontSize: screenRatio * 9,
               fontFamily: GoogleFonts.poppins().fontFamily,
               fontWeight: FontWeight.bold,
@@ -136,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           },
           child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
             physics: const AlwaysScrollableScrollPhysics(),
             child: Container(
               width: screenSize.width,
@@ -164,6 +165,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 address:
                                     '${shop['contactInfo']['address']['street'] ?? ''}, '
                                     '${shop['contactInfo']['address']['city'] ?? ''}',
+                                onEdit: () {
+                                  logger.d(shop);
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/edit_shop', // Named route
+                                    (Route<dynamic> route) =>
+                                        true, // This removes all previous routes
+                                    arguments: {
+                                      'realm': widget.realm,
+                                      'screenSize': screenSize,
+                                      'screenRatio': screenRatio,
+                                      'shop': shop,
+                                      'deviceToken': widget.deviceToken,
+                                      'deviceType': widget.deviceType,
+                                    },
+                                  );
+                                },
                               );
                             },
                           ),
