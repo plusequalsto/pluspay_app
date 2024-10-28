@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 import 'package:pluspay/models/products.dart';
+import 'package:pluspay/screens/home_screen/home_screen.dart';
 import 'package:pluspay/widgets/custom_card.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:pluspay/widgets/custom_drawer.dart';
@@ -12,10 +14,12 @@ import 'package:realm/realm.dart';
 
 class ShopScreen extends StatefulWidget {
   final Realm realm;
+  final Map<String, dynamic> shop;
   final String? deviceToken, deviceType;
   const ShopScreen({
     super.key,
     required this.realm,
+    required this.shop,
     required this.deviceToken,
     required this.deviceType,
   });
@@ -62,25 +66,24 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   void addToCart(Products product) {
-    setState(() {
-      cart[product.sku] =
-          (cart[product.sku] ?? 0) + 1; // Increment the quantity
-      product.stock--; // Decrease stock (if applicable)
-    });
-    logger.d(cart);
+    if (product.stock > 0) {
+      setState(() {
+        cart[product.sku] = (cart[product.sku] ?? 0) + 1;
+        product.stock--;
+      });
+    }
   }
 
   void removeFromCart(Products product) {
-    setState(() {
-      if (cart[product.sku] != null && cart[product.sku]! > 0) {
-        cart[product.sku] = cart[product.sku]! - 1; // Decrement the quantity
+    if (cart[product.sku] != null && cart[product.sku]! > 0) {
+      setState(() {
+        cart[product.sku] = cart[product.sku]! - 1;
         if (cart[product.sku] == 0) {
-          cart.remove(product.sku); // Remove from cart if quantity is 0
+          cart.remove(product.sku);
         }
-        product.stock++; // Increase stock (if applicable)
-      }
-    });
-    logger.d(cart);
+        product.stock++;
+      });
+    }
   }
 
   @override
@@ -90,6 +93,81 @@ class _ShopScreenState extends State<ShopScreen> {
     return Scaffold(
       key: _scaffoldKey, // Ensure the key is set here
       backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: AppColors.textPrimary,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                  realm: widget.realm,
+                  deviceToken: widget.deviceToken,
+                  deviceType: widget.deviceType,
+                ),
+              ),
+            );
+          },
+        ),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            widget.shop['businessName'],
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: screenRatio * 9,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/checkout', // Named route
+                  (Route<dynamic> route) =>
+                      true, // false removes all previous routes
+                  arguments: {
+                    'realm': widget.realm,
+                    'shop': widget.shop,
+                    'cart': cart,
+                    'products': products,
+                    'deviceToken': widget.deviceToken,
+                    'deviceType': widget.deviceType,
+                  },
+                );
+              },
+              child: cart.isNotEmpty
+                  ? badges.Badge(
+                      badgeContent: Text(
+                        '${cart.values.fold(0, (prev, element) => prev + element)}', // Total items in cart
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: AppColors.textPrimary,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      badgeAnimation: badges.BadgeAnimation.fade(),
+                      child: const Icon(
+                        Icons.shopping_basket_rounded,
+                        color: AppColors.backgroundColor,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.shopping_basket_rounded,
+                      color: AppColors.backgroundColor,
+                    ),
+            ),
+          ),
+        ],
+      ),
       drawer: CustomDrawer(
         realm: widget.realm,
         deviceToken: widget.deviceToken,
@@ -109,101 +187,32 @@ class _ShopScreenState extends State<ShopScreen> {
           }
         },
         child: Center(
-          child: Container(
+          child: SizedBox(
             width: screenSize.width,
             height: screenSize.height,
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: screenSize.width,
-                    height: screenSize.height * 0.08,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: IconButton(
-                            onPressed: () {
-                              _scaffoldKey.currentState?.openDrawer();
-                            },
-                            icon: const Icon(
-                              Icons.menu_rounded,
-                              color: AppColors.primaryColor,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                '/checkout', // Named route
-                                (Route<dynamic> route) =>
-                                    true, // false removes all previous routes
-                                arguments: {
-                                  'realm': widget.realm,
-                                  'cart': cart,
-                                  'products': products,
-                                  'deviceToken': widget.deviceToken,
-                                  'deviceType': widget.deviceType,
-                                },
-                              );
-                            },
-                            child: cart.isNotEmpty
-                                ? badges.Badge(
-                                    badgeContent: Text(
-                                      '${cart.values.fold(0, (prev, element) => prev + element)}', // Total items in cart
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        color: AppColors.textPrimary,
-                                        fontFamily:
-                                            GoogleFonts.poppins().fontFamily,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    badgeAnimation:
-                                        badges.BadgeAnimation.fade(),
-                                    child: const Icon(
-                                      Icons.shopping_basket_rounded,
-                                      color: AppColors.primaryColor,
-                                    ),
-                                  )
-                                : const Icon(
-                                    Icons.shopping_basket_rounded,
-                                    color: AppColors.primaryColor,
-                                  ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: filterProducts,
-                      decoration: InputDecoration(
-                        hintText: 'Search products...',
-                        hintStyle: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.subText,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: AppColors.primaryColor,
-                        ),
+                  TextField(
+                    controller: searchController,
+                    onChanged: filterProducts,
+                    decoration: InputDecoration(
+                      hintText: 'Search products...',
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.subText,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: AppColors.primaryColor,
                       ),
                     ),
                   ),
@@ -222,10 +231,15 @@ class _ShopScreenState extends State<ShopScreen> {
                                 return CustomCard(
                                   screenRatio: screenRatio,
                                   product: product,
-                                  onIncrease: () => product.stock > 0
-                                      ? () => addToCart(product)
-                                      : null,
-                                  onDecrease: () => removeFromCart(product),
+                                  onIncrease: () {
+                                    product.stock > 0
+                                        ? addToCart(product)
+                                        : null;
+                                  },
+                                  onDecrease: () {
+                                    logger.d('decrease');
+                                    removeFromCart(product);
+                                  },
                                   quantity:
                                       quantity, // Pass the quantity to the card
                                 );

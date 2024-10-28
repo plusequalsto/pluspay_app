@@ -18,6 +18,7 @@ import 'package:realm/realm.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final Realm realm;
+  final Map<String, dynamic> shop;
   final Map<String, int> cart;
   final List<Products> products;
   final String? deviceToken, deviceType;
@@ -25,6 +26,7 @@ class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({
     super.key,
     required this.realm,
+    required this.shop,
     required this.cart,
     required this.products,
     required this.deviceToken,
@@ -177,6 +179,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       setState(() {
         isPaymentSuccessful = true;
       });
+      Future.delayed(const Duration(seconds: 2)).then(
+        (value) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/shop', // Named route
+            (Route<dynamic> route) => true, // This removes all previous routes
+            arguments: {
+              'realm': widget.realm,
+              'shop': widget.shop,
+              'deviceToken': widget.deviceToken,
+              'deviceType': widget.deviceType,
+            },
+          );
+        },
+      );
       showSnackBar('Payment processed!');
     } catch (e) {
       showSnackBar('Inside collect payment exception ${e.toString()}');
@@ -505,8 +522,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ],
                   ),
                   if (isPaymentSuccessful)
-                    Lottie.asset(
-                      'assets/animations/success.json',
+                    Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Lottie.asset(
+                          'assets/animations/success.json',
+                        ),
+                      ),
                     ),
                 ],
               ),

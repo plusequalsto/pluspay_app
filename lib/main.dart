@@ -6,6 +6,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
+import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/models/user_model.dart';
 import 'package:pluspay/routes/router_provider.dart';
 import 'package:pluspay/routes/routes.dart';
@@ -233,6 +234,13 @@ class _MainState extends State<Main> {
       navigatorKey: navigatorKey,
       title: widget.title,
       onGenerateRoute: widget.router.generator,
+      theme: ThemeData(
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: AppColors.primaryColor,
+          // selectionColor: AppColors.primaryColor,
+          selectionHandleColor: AppColors.primaryColor,
+        ),
+      ),
       home: _isLoading == true && _hasLocationPermission == false
           ? RouterProvider(
               router: widget.router,

@@ -6,12 +6,14 @@ class BusinessInfoSlide extends StatelessWidget {
   final double screenRatio;
   final TextEditingController businessNameController;
   final TextEditingController tradingNameController;
+  final TextEditingController companyhouseregistrationNumberController;
 
   const BusinessInfoSlide({
     super.key,
     required this.screenRatio,
     required this.businessNameController,
     required this.tradingNameController,
+    required this.companyhouseregistrationNumberController,
   });
 
   @override
@@ -74,6 +76,32 @@ class BusinessInfoSlide extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
               hintText: 'Trading Name',
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: screenRatio * 6,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: screenRatio * 8),
+          TextField(
+            controller: tradingNameController,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: screenRatio * 8,
+                vertical: screenRatio * 4,
+              ),
+              border: const OutlineInputBorder(),
+              labelText: 'Companies House Registration Number',
+              labelStyle: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: screenRatio * 6,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.normal,
+              ),
+              hintText: 'Companies House Registration Number',
               hintStyle: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: screenRatio * 6,

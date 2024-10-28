@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pluspay/api/user_api.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 import 'package:pluspay/models/user_model.dart';
+import 'package:pluspay/screens/home_screen/home_screen.dart';
 import 'package:pluspay/screens/home_screen/widgets/brand_settings_slide.dart';
 import 'package:pluspay/screens/home_screen/widgets/business_info_slide.dart';
 import 'package:pluspay/screens/home_screen/widgets/contact_info_slide.dart';
@@ -12,27 +14,26 @@ import 'package:pluspay/screens/home_screen/widgets/settings_slide.dart';
 import 'package:pluspay/utils/custom_snackbar_util.dart';
 import 'package:realm/realm.dart';
 
-class AddShopDialog extends StatefulWidget {
+class AddShopScreen extends StatefulWidget {
   final Size screenSize;
   final double screenRatio;
   final Realm realm;
   final String? deviceToken, deviceType;
-  final UserModel? userModel;
-  const AddShopDialog({
+  // final UserModel? userModel;
+  const AddShopScreen({
     super.key,
     required this.screenSize,
     required this.screenRatio,
     required this.realm,
     required this.deviceToken,
     required this.deviceType,
-    required this.userModel,
   });
 
   @override
-  State<AddShopDialog> createState() => _AddShopDialogState();
+  State<AddShopScreen> createState() => _AddShopScreenState();
 }
 
-class _AddShopDialogState extends State<AddShopDialog> {
+class _AddShopScreenState extends State<AddShopScreen> {
   UserModel? userModel;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final PageController _pageController = PageController();
@@ -60,6 +61,8 @@ class _AddShopDialogState extends State<AddShopDialog> {
     return {
       "businessName": businessNameController.text,
       "tradingName": tradingNameController.text,
+      "companyhouseregistrationNumber":
+          companyhouseregistrationNumberController.text,
       "contactInfo": {
         "email": emailController.text,
         // Assuming you need additional fields for phone and address
@@ -190,38 +193,72 @@ class _AddShopDialogState extends State<AddShopDialog> {
   @override
   Widget build(BuildContext context) {
     logger.d(_currentPageIndex);
-    final heights = {
-      0: widget.screenSize.height * 0.42,
-      1: widget.screenSize.height * 0.76,
-      2: widget.screenSize.height * 0.56,
-      3: widget.screenSize.height * 0.56,
-    };
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus) {
-          currentFocus.unfocus();
-        }
-      },
-      child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(widget.screenRatio * 8),
+    double width = 0.0;
+    double height = 0.0;
+    double screenRatio = 0.0;
+    width = widget.screenSize.width;
+    height = widget.screenSize.height;
+
+    screenRatio = widget.screenRatio; // Correct the assignment
+
+    double appBarHeight = AppBar().preferredSize.height;
+    double availableHeight =
+        height - appBarHeight - MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
+        foregroundColor: AppColors.textPrimary,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                  realm: widget.realm,
+                  deviceToken: widget.deviceToken,
+                  deviceType: widget.deviceType,
+                ),
+              ),
+            );
+          },
         ),
-        backgroundColor: AppColors.backgroundColor,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Add Shop Details',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: widget.screenRatio * 9,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           physics: const BouncingScrollPhysics(),
           child: Container(
-            width: widget.screenSize.width * 0.4,
-            height: heights[_currentPageIndex],
-            padding: EdgeInsets.all(widget.screenRatio * 6),
+            width: width,
+            padding: EdgeInsets.all(screenRatio),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
+                  SizedBox(
+                    height: availableHeight * 0.8,
                     child: PageView(
                       controller: _pageController,
                       onPageChanged: (int page) {
@@ -233,7 +270,7 @@ class _AddShopDialogState extends State<AddShopDialog> {
                       children: [
                         // Slide 1: Business name and Trading name
                         BusinessInfoSlide(
-                          screenRatio: widget.screenRatio,
+                          screenRatio: screenRatio,
                           businessNameController: businessNameController,
                           tradingNameController: tradingNameController,
                           companyhouseregistrationNumberController:
@@ -241,7 +278,7 @@ class _AddShopDialogState extends State<AddShopDialog> {
                         ),
                         // Slide 2: Contact Info
                         ContactInfoSlide(
-                          screenRatio: widget.screenRatio,
+                          screenRatio: screenRatio,
                           emailController: emailController,
                           phoneController: phoneController,
                           streetController: streetController,
@@ -251,7 +288,7 @@ class _AddShopDialogState extends State<AddShopDialog> {
                         ),
                         // Slide 3: Brand Settings
                         BrandSettingsSlide(
-                          screenRatio: widget.screenRatio,
+                          screenRatio: screenRatio,
                           logoUrlController: logoUrlController,
                           primaryColorController: primaryColorController,
                           secondaryColorController: secondaryColorController,
@@ -259,7 +296,7 @@ class _AddShopDialogState extends State<AddShopDialog> {
                         ),
                         // Slide 4: Settings
                         SettingsSlide(
-                          screenRatio: widget.screenRatio,
+                          screenRatio: screenRatio,
                           currencyController: currencyController,
                           languageController: languageController,
                           timezoneController: timezoneController,
@@ -282,8 +319,8 @@ class _AddShopDialogState extends State<AddShopDialog> {
                             : null, // Disable button on the first page
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(
-                            widget.screenSize.width * 0.3,
-                            widget.screenRatio * 24,
+                            width * 0.3,
+                            screenRatio * 24,
                           ),
                           foregroundColor: AppColors.textPrimary,
                           backgroundColor: AppColors.primaryColor,
@@ -296,7 +333,7 @@ class _AddShopDialogState extends State<AddShopDialog> {
                         child: Text(
                           'Back',
                           style: TextStyle(
-                            fontSize: widget.screenRatio * 8,
+                            fontSize: screenRatio * 8,
                             color: AppColors.textPrimary,
                             fontWeight: FontWeight.bold,
                           ),
@@ -316,8 +353,8 @@ class _AddShopDialogState extends State<AddShopDialog> {
                               },
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(
-                            widget.screenSize.width * 0.3,
-                            widget.screenRatio * 24,
+                            width * 0.3,
+                            screenRatio * 24,
                           ),
                           foregroundColor: AppColors.textPrimary,
                           backgroundColor: AppColors.primaryColor,
@@ -330,7 +367,7 @@ class _AddShopDialogState extends State<AddShopDialog> {
                         child: Text(
                           _currentPageIndex < 3 ? 'Next' : 'Submit',
                           style: TextStyle(
-                            fontSize: widget.screenRatio * 8,
+                            fontSize: screenRatio * 8,
                             color: AppColors.textPrimary,
                             fontWeight: FontWeight.bold,
                           ),

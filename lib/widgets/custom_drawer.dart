@@ -146,7 +146,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           if (status == 200) {
                             Navigator.pushNamedAndRemoveUntil(
                               context,
-                              '/hosigninme', // Named route
+                              '/signin', // Named route
                               (Route<dynamic> route) =>
                                   false, // This removes all previous routes
                               arguments: {

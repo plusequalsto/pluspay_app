@@ -5,6 +5,7 @@ import 'package:pluspay/models/products.dart';
 import 'package:pluspay/screens/authentication_screen/signin_screen.dart';
 import 'package:pluspay/screens/checkout_screen/checkout_screen.dart';
 import 'package:pluspay/screens/home_screen/home_screen.dart';
+import 'package:pluspay/screens/home_screen/widgets/addshop_screen.dart';
 import 'package:pluspay/screens/home_screen/widgets/editshop_screen.dart';
 import 'package:pluspay/screens/password_reset_screen/password_reset_screen.dart';
 import 'package:pluspay/screens/shop_screen/shop_screen.dart';
@@ -70,7 +71,28 @@ void defineRoutes(FluroRouter router) {
       },
     ),
   );
-  // Home Screen
+  // Add Shop Screen
+  router.define(
+    '/add_shop',
+    handler: Handler(
+      handlerFunc: (context, params) {
+        final args = context?.settings?.arguments as Map<String, dynamic>;
+        Realm realm = args['realm'];
+        Size screenSize = args['screenSize'];
+        double screenRatio = args['screenRatio'];
+        String deviceToken = args['deviceToken'];
+        String deviceType = args['deviceType'];
+        return AddShopScreen(
+          realm: realm,
+          screenSize: screenSize,
+          screenRatio: screenRatio,
+          deviceToken: deviceToken,
+          deviceType: deviceType,
+        );
+      },
+    ),
+  );
+  // Edit Shop Screen
   router.define(
     '/edit_shop',
     handler: Handler(
@@ -100,10 +122,12 @@ void defineRoutes(FluroRouter router) {
       handlerFunc: (context, params) {
         final args = context?.settings?.arguments as Map<String, dynamic>;
         Realm realm = args['realm'];
+        Map<String, dynamic> shop = args['shop'];
         String deviceToken = args['deviceToken'];
         String deviceType = args['deviceType'];
         return ShopScreen(
           realm: realm,
+          shop: shop,
           deviceToken: deviceToken,
           deviceType: deviceType,
         );
@@ -117,12 +141,14 @@ void defineRoutes(FluroRouter router) {
       handlerFunc: (context, params) {
         final args = context?.settings?.arguments as Map<String, dynamic>;
         Realm realm = args['realm'];
+        Map<String, dynamic> shop = args['shop'];
         Map<String, int> cart = args['cart'];
         List<Products> products = args['products'];
         String deviceToken = args['deviceToken'];
         String deviceType = args['deviceType'];
         return CheckoutScreen(
           realm: realm,
+          shop: shop,
           cart: cart,
           products: products,
           deviceToken: deviceToken,

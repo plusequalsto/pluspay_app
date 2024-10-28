@@ -32,6 +32,7 @@ class _SigninScreenState extends State<SigninScreen> {
   bool _pobscureText = true;
   bool _isEmailValid = true;
   bool _isPasswordValid = true;
+  bool _isSigningIn = false;
 
   @override
   void initState() {
@@ -64,7 +65,9 @@ class _SigninScreenState extends State<SigninScreen> {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       String email = _emailController.text.trim();
       String password = _passwordController.text.trim();
-
+      setState(() {
+        _isSigningIn = true;
+      });
       try {
         final response = await AuthApi().signin(
             email, password, null, widget.deviceToken!, widget.deviceType!);
@@ -88,7 +91,10 @@ class _SigninScreenState extends State<SigninScreen> {
               // Update existing user
               existingUser.accessToken = accessToken;
               existingUser.refreshToken = refreshToken;
-              // Add any additional updates you need
+
+              setState(() {
+                _isSigningIn = false;
+              });
             } else {
               // Add new user
               widget.realm.add(userModel);
@@ -158,272 +164,304 @@ class _SigninScreenState extends State<SigninScreen> {
     logger.i(screenRatio);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
-        },
-        child: Center(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: const BouncingScrollPhysics(),
-            child: Container(
-              width: screenSize.width,
-              height: screenSize.height,
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: Padding(
-                padding: EdgeInsets.all(screenRatio * 4),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: screenRatio * 16),
-                    SvgPicture.asset(
-                      'assets/svgs/PlusPay.svg',
-                      width: screenRatio * 64,
-                    ),
-                    SizedBox(height: screenRatio * 8),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Sign in to your account',
-                        style: TextStyle(
-                          fontSize: screenRatio * 8,
-                          color: AppColors.subText,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.bold,
+      body: Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: const BouncingScrollPhysics(),
+                child: Container(
+                  width: screenSize.width,
+                  height: screenSize.height,
+                  padding:
+                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: Padding(
+                    padding: EdgeInsets.all(screenRatio * 4),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: screenRatio * 16),
+                        SvgPicture.asset(
+                          'assets/svgs/PlusPay.svg',
+                          width: screenRatio * 64,
                         ),
-                      ),
-                    ),
-                    SizedBox(height: screenRatio * 8),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextFormField(
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: screenRatio * 8,
-                                vertical: screenRatio * 4,
-                              ),
-                              border: const OutlineInputBorder(),
-                              labelText: 'Email ID',
-                              labelStyle: TextStyle(
-                                color: _isEmailValid
-                                    ? AppColors.textSecondary
-                                    : AppColors.errorColor,
-                                fontSize: screenRatio * 6,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              hintText: 'Email ID',
-                              hintStyle: TextStyle(
-                                color: _isEmailValid
-                                    ? AppColors.textSecondary
-                                    : AppColors.errorColor,
-                                fontSize: screenRatio * 6,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              errorStyle: TextStyle(
-                                color: AppColors.errorColor,
-                                fontSize: screenRatio * 4,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryColor,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryColor,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors
-                                      .errorColor, // Set the color for the error border
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors
-                                      .errorColor, // Set the color for the focused error border
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
+                        SizedBox(height: screenRatio * 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Sign in to your account',
+                            style: TextStyle(
+                              fontSize: screenRatio * 8,
+                              color: AppColors.subText,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.bold,
                             ),
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: _validateEmail,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Email ID is required';
-                              } else if (!_isEmailValid) {
-                                return 'Enter valid Email ID';
-                              }
-                              return null;
-                            },
                           ),
-                          SizedBox(height: screenRatio * 8),
-                          TextFormField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: screenRatio * 8,
-                                vertical: screenRatio * 4,
-                              ),
-                              labelText: 'Password',
-                              labelStyle: TextStyle(
-                                color: _isPasswordValid
-                                    ? AppColors.textSecondary
-                                    : AppColors.errorColor,
-                                fontSize: screenRatio * 6,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              hintText: 'Password',
-                              hintStyle: TextStyle(
-                                color: _isPasswordValid
-                                    ? AppColors.textSecondary
-                                    : AppColors.errorColor,
-                                fontSize: screenRatio * 6,
-                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              errorStyle: TextStyle(
-                                color: AppColors.errorColor,
-                                fontSize: screenRatio * 4,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryColor,
-                                  width: 2.0,
+                        ),
+                        SizedBox(height: screenRatio * 8),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              TextFormField(
+                                style: const TextStyle(
+                                  color: Colors.black, // Text color
+                                  // Here you would typically set the text selection color, but it's not available directly.
                                 ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryColor,
-                                  width: 2.0,
+                                controller: _emailController,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: screenRatio * 8,
+                                    vertical: screenRatio * 4,
+                                  ),
+                                  border: const OutlineInputBorder(),
+                                  labelText: 'Email ID',
+                                  labelStyle: TextStyle(
+                                    color: _isEmailValid
+                                        ? AppColors.textSecondary
+                                        : AppColors.errorColor,
+                                    fontSize: screenRatio * 6,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  hintText: 'Email ID',
+                                  hintStyle: TextStyle(
+                                    color: _isEmailValid
+                                        ? AppColors.textSecondary
+                                        : AppColors.errorColor,
+                                    fontSize: screenRatio * 6,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: AppColors.errorColor,
+                                    fontSize: screenRatio * 4,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors.primaryColor,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors.primaryColor,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors
+                                          .errorColor, // Set the color for the error border
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors
+                                          .errorColor, // Set the color for the focused error border
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors.errorColor,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: AppColors.errorColor,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _pobscureText = !_pobscureText;
-                                  });
+                                keyboardType: TextInputType.emailAddress,
+                                onChanged: _validateEmail,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Email ID is required';
+                                  } else if (!_isEmailValid) {
+                                    return 'Enter valid Email ID';
+                                  }
+                                  return null;
                                 },
-                                child: Icon(
-                                  color: _isPasswordValid
-                                      ? AppColors.primaryColor
-                                      : AppColors.errorColor,
-                                  _pobscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  size: screenRatio * 8,
+                              ),
+                              SizedBox(height: screenRatio * 8),
+                              TextFormField(
+                                controller: _passwordController,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: screenRatio * 8,
+                                    vertical: screenRatio * 4,
+                                  ),
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(
+                                    color: _isPasswordValid
+                                        ? AppColors.textSecondary
+                                        : AppColors.errorColor,
+                                    fontSize: screenRatio * 6,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  hintText: 'Password',
+                                  hintStyle: TextStyle(
+                                    color: _isPasswordValid
+                                        ? AppColors.textSecondary
+                                        : AppColors.errorColor,
+                                    fontSize: screenRatio * 6,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: AppColors.errorColor,
+                                    fontSize: screenRatio * 4,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors.primaryColor,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors.primaryColor,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors.errorColor,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: AppColors.errorColor,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _pobscureText = !_pobscureText;
+                                      });
+                                    },
+                                    child: Icon(
+                                      color: _isPasswordValid
+                                          ? AppColors.primaryColor
+                                          : AppColors.errorColor,
+                                      _pobscureText
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      size: screenRatio * 8,
+                                    ),
+                                  ),
                                 ),
+                                keyboardType: TextInputType.visiblePassword,
+                                onChanged: _validatePassword,
+                                obscureText: _pobscureText,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Password is required';
+                                  } else if (!_isPasswordValid) {
+                                    return 'Enter valid Password';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: screenRatio * 16),
+                        ElevatedButton(
+                          onPressed: (_emailController.text.isNotEmpty &&
+                                  _passwordController.text.isNotEmpty)
+                              ? onSignIn
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            fixedSize:
+                                Size(screenSize.width * 1.0, screenRatio * 28),
+                            foregroundColor:
+                                (_emailController.text.isNotEmpty &&
+                                        _passwordController.text.isNotEmpty)
+                                    ? AppColors.textPrimary
+                                    : AppColors.textPrimary,
+                            backgroundColor:
+                                (_emailController.text.isNotEmpty &&
+                                        _passwordController.text.isNotEmpty)
+                                    ? AppColors.primaryColor
+                                    : AppColors.primaryColorLight,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 12),
+                          ),
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              fontSize: screenRatio * 8,
+                              color: (_emailController.text.isNotEmpty &&
+                                      _passwordController.text.isNotEmpty)
+                                  ? AppColors.textPrimary
+                                  : AppColors.textSecondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: screenRatio * 8),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Sign in to your account',
+                              style: TextStyle(
+                                fontSize: screenRatio * 6,
+                                color: AppColors.subText,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            keyboardType: TextInputType.visiblePassword,
-                            onChanged: _validatePassword,
-                            obscureText: _pobscureText,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Password is required';
-                              } else if (!_isPasswordValid) {
-                                return 'Enter valid Password';
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: screenRatio * 16),
-                    ElevatedButton(
-                      onPressed: (_emailController.text.isNotEmpty &&
-                              _passwordController.text.isNotEmpty)
-                          ? onSignIn
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        fixedSize:
-                            Size(screenSize.width * 1.0, screenRatio * 28),
-                        foregroundColor: (_emailController.text.isNotEmpty &&
-                                _passwordController.text.isNotEmpty)
-                            ? AppColors.textPrimary
-                            : AppColors.textPrimary,
-                        backgroundColor: (_emailController.text.isNotEmpty &&
-                                _passwordController.text.isNotEmpty)
-                            ? AppColors.primaryColor
-                            : AppColors.primaryColorLight,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 12),
-                      ),
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(
-                          fontSize: screenRatio * 8,
-                          color: (_emailController.text.isNotEmpty &&
-                                  _passwordController.text.isNotEmpty)
-                              ? AppColors.textPrimary
-                              : AppColors.textSecondary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: screenRatio * 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Sign in to your account',
-                          style: TextStyle(
-                            fontSize: screenRatio * 6,
-                            color: AppColors.subText,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+          if (_isSigningIn)
+            Center(
+              child: Container(
+                width: screenRatio * 32,
+                height: screenRatio * 32,
+                padding: EdgeInsets.all(screenRatio * 4),
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const CircularProgressIndicator(
+                  backgroundColor: AppColors.backgroundColor,
+                  color: AppColors.primaryColor,
+                  strokeCap: StrokeCap.round,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -43,6 +43,8 @@ class _EditShopScreenState extends State<EditShopScreen> {
   int _currentPageIndex = 0;
   final TextEditingController businessNameController = TextEditingController();
   final TextEditingController tradingNameController = TextEditingController();
+  final TextEditingController companyhouseregistrationNumberController =
+      TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController streetController = TextEditingController();
@@ -86,6 +88,27 @@ class _EditShopScreenState extends State<EditShopScreen> {
         "taxRate": double.tryParse(taxRateController.text) ?? 0.0,
       },
     };
+  }
+
+  Future<void> setEditFields(shop) async {
+    setState(() {
+      businessNameController.text = shop['businessName'];
+      tradingNameController.text = shop['tradingName'];
+      emailController.text = shop['contactInfo']['email'];
+      phoneController.text = shop['phone'];
+      streetController.text = shop['street'];
+      cityController.text = shop['city'];
+      postcodeController.text = shop['postcode'];
+      countryController.text = shop['country'];
+      logoUrlController.text = shop['logoUrl'];
+      primaryColorController.text = shop['primaryColor'];
+      secondaryColorController.text = shop['secondaryColor'];
+      fontController.text = shop['font'];
+      currencyController.text = shop['currency'];
+      languageController.text = shop['language'];
+      timezoneController.text = shop['timezone'];
+      taxRateController.text = shop['taxRate'];
+    });
   }
 
   void submitData(data) async {
@@ -154,6 +177,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
   void initState() {
     super.initState();
     userModel = getUserData(widget.realm);
+    setEditFields(widget.shop);
     _pageController.addListener(() {
       setState(() {
         _currentPageIndex = _pageController.page?.round() ?? 0;
@@ -175,6 +199,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
     _pageController.dispose();
     businessNameController.dispose();
     tradingNameController.dispose();
+    companyhouseregistrationNumberController.dispose();
     emailController.dispose();
     logoUrlController.dispose();
     primaryColorController.dispose();
@@ -276,6 +301,8 @@ class _EditShopScreenState extends State<EditShopScreen> {
                             screenRatio: screenRatio,
                             businessNameController: businessNameController,
                             tradingNameController: tradingNameController,
+                            companyhouseregistrationNumberController:
+                                companyhouseregistrationNumberController,
                           ),
                           // Slide 2: Contact Info
                           ContactInfoSlide(

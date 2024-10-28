@@ -7,7 +7,6 @@ import 'package:pluspay/api/user_api.dart';
 import 'package:pluspay/constants/app_colors.dart';
 import 'package:pluspay/main.dart';
 import 'package:pluspay/models/user_model.dart';
-import 'package:pluspay/screens/home_screen/widgets/addshop_dialog.dart';
 import 'package:pluspay/screens/home_screen/widgets/no_shops_widget.dart';
 import 'package:pluspay/screens/home_screen/widgets/shop_card_widget.dart';
 import 'package:pluspay/utils/custom_snackbar_util.dart';
@@ -64,13 +63,15 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             shopData = shop;
           });
-          logger.d('Shop Data: $shopData');
         }
       }
     } on SocketException catch (e) {
       logger.d('NetworkException: $e');
+      CustomSnackBarUtil.showCustomSnackBar(
+          "Network error. Please try again later.");
     } on Exception catch (e) {
       logger.d('Failed to fetch data: $e');
+      CustomSnackBarUtil.showCustomSnackBar("Failed to fetch data.");
     }
   }
 
@@ -158,24 +159,32 @@ class _HomeScreenState extends State<HomeScreen> {
                               final shop = shopData[index];
                               return ShopCardWidget(
                                 screenRatio: screenRatio,
-                                businessName: shop['businessName'] ?? '',
-                                tradingName: shop['tradingName'] ?? '',
-                                email: shop['contactInfo']['email'] ?? '',
-                                phone: shop['contactInfo']['phone'] ?? '',
-                                address:
-                                    '${shop['contactInfo']['address']['street'] ?? ''}, '
-                                    '${shop['contactInfo']['address']['city'] ?? ''}',
+                                shopData: shop ?? [],
                                 onEdit: () {
                                   logger.d(shop);
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     '/edit_shop', // Named route
-                                    (Route<dynamic> route) =>
-                                        true, // This removes all previous routes
+                                    (Route<dynamic> route) => true,
                                     arguments: {
                                       'realm': widget.realm,
                                       'screenSize': screenSize,
                                       'screenRatio': screenRatio,
+                                      'shop': shop,
+                                      'deviceToken': widget.deviceToken,
+                                      'deviceType': widget.deviceType,
+                                    },
+                                  );
+                                },
+                                onTap: () {
+                                  logger.d('can');
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    '/shop', // Named route
+                                    (Route<dynamic> route) =>
+                                        true, // This removes all previous routes
+                                    arguments: {
+                                      'realm': widget.realm,
                                       'shop': shop,
                                       'deviceToken': widget.deviceToken,
                                       'deviceType': widget.deviceType,
@@ -195,25 +204,27 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           logger.d('Add shops pressed');
-          bool? shopAdded = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AddShopDialog(
-                screenSize: screenSize,
-                screenRatio: screenRatio,
-                realm: widget.realm,
-                deviceToken: widget.deviceToken,
-                deviceType: widget.deviceType,
-                userModel: userModel,
-              );
+
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/add_shop', // Named route
+            (Route<dynamic> route) => true,
+            arguments: {
+              'realm': widget.realm,
+              'screenSize': screenSize,
+              'screenRatio': screenRatio,
+              'deviceToken': widget.deviceToken,
+              'deviceType': widget.deviceType,
             },
-          );
-          if (shopAdded!) {
-            _handleRefresh();
-            CustomSnackBarUtil.showCustomSnackBar(
+          ).then((shopAdded) {
+            if (shopAdded == true) {
+              _handleRefresh();
+              CustomSnackBarUtil.showCustomSnackBar(
                 "Shop details successfully added",
-                success: true);
-          }
+                success: true,
+              );
+            }
+          });
         },
         backgroundColor: AppColors.primaryColor,
         foregroundColor: AppColors.backgroundColor,
