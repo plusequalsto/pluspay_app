@@ -12,6 +12,7 @@ import 'package:pluspay/routes/router_provider.dart';
 import 'package:pluspay/routes/routes.dart';
 import 'package:pluspay/screens/authentication_screen/signin_screen.dart';
 import 'package:pluspay/screens/home_screen/home_screen.dart';
+import 'package:pluspay/screens/nfc_read_screen.dart';
 import 'package:pluspay/screens/splash_screen/splash_screen.dart';
 import 'package:pluspay/services/analytics_service.dart';
 import 'package:pluspay/services/devide_identifier.dart';
@@ -257,13 +258,17 @@ class _MainState extends State<Main> {
     UserModel? userModel = getUserData(widget.realm);
     if (_isDeviceTokenInitialized) {
       return userModel?.id != null && _isRefreshTokenRefreshed
+          // ? RouterProvider(
+          //     router: widget.router,
+          //     child: HomeScreen(
+          //       realm: widget.realm,
+          //       deviceToken: _deviceToken,
+          //       deviceType: _deviceType,
+          //     ),
+          //   )
           ? RouterProvider(
               router: widget.router,
-              child: HomeScreen(
-                realm: widget.realm,
-                deviceToken: _deviceToken,
-                deviceType: _deviceType,
-              ),
+              child: NFCReadScreen(),
             )
           : RouterProvider(
               router: widget.router,
